@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05070d" />
+
+  <title>Chord Vision — MP3 para Cifra</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<header class="topbar">
+
+  <a class="brand" href="#">
+    <span class="logo">CV</span>
+
+    <span>
+      <b>Chord Vision</b>
+      <small>Audio → Harmonia</small>
+    </span>
+  </a>
+
+  <button class="ghost" id="themeBtn">
+    ◐
+  </button>
+
+</header>
+
+
+<main>
+
+<section class="hero">
+
+  <div class="eyebrow">
+    <span></span>
+    ANÁLISE MUSICAL ASSISTIDA
+  </div>
+
+  <h1>
+    Transforme uma música em
+    <em>acordes tocáveis.</em>
+  </h1>
+
+  <p>
+    Envie seu áudio. O sistema estima o tom, BPM,
+    mudanças de acorde, extensões e, no modo avançado,
+    tenta reconhecer inversões pelo baixo.
+  </p>
+
+</section>
+
+
+<section class="workspace">
+
+  <div class="upload-card" id="dropZone">
+
+    <input
+      id="fileInput"
+      type="file"
+      accept="audio/mpeg,audio/wav,audio/flac,audio/mp4,audio/ogg,.mp3,.wav,.flac,.m4a,.ogg"
+      hidden
+    />
+
+    <div class="upload-icon">♪</div>
+
+    <h2 id="uploadTitle">
+      Solte sua música aqui
+    </h2>
+
+    <p id="uploadSub">
+      MP3, WAV, FLAC, M4A ou OGG
+    </p>
+
+    <button class="primary" id="chooseBtn">
+      Escolher áudio
+    </button>
+
+  </div>
+
+
+  <div class="controls-card">
+
+    <div class="field-row">
+
+      <div>
+        <label>Modo de análise</label>
+
+        <p>
+          Avançado tenta separar a voz antes
+          da leitura harmônica.
+        </p>
+      </div>
+
+      <div class="segmented" id="modeControl">
+
+        <button data-mode="quick" class="active">
+          Rápido
+        </button>
+
+        <button data-mode="advanced">
+          Avançado
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="field-row slider-row">
+
+      <div>
+
+        <label for="sensitivity">
+          Sensibilidade
+        </label>
+
+        <p>
+          Mais alta = evita acordes de baixa confiança.
+        </p>
+
+      </div>
+
+      <div class="slider-box">
+
+        <span id="sensitivityValue">
+          62%
+        </span>
+
+        <input
+          id="sensitivity"
+          type="range"
+          min="25"
+          max="95"
+          value="62"
+        />
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="analyze"
+      id="analyzeBtn"
+      disabled
+    >
+      <span>✦</span>
+      Analisar música
+    </button>
+
+  </div>
+
+</section>
+
+
+<section class="loading hidden" id="loading">
+
+  <div class="orb"></div>
+
+  <div>
+
+    <strong>
+      Analisando estrutura harmônica…
+    </strong>
+
+    <span id="loadingText">
+      Preparando o áudio
+    </span>
+
+  </div>
+
+</section>
+
+
+<section class="results hidden" id="results">
+
+  <div class="summary-grid">
+
+    <article>
+
+      <span>TONALIDADE</span>
+
+      <strong id="keyValue">
+        —
+      </strong>
+
+      <small id="keyConfidence">
+        —
+      </small>
+
+    </article>
+
+
+    <article>
+
+      <span>BPM</span>
+
+      <strong id="bpmValue">
+        —
+      </strong>
+
+      <small>
+        tempo estimado
+      </small>
+
+    </article>
+
+
+    <article>
+
+      <span>DURAÇÃO</span>
+
+      <strong id="durationValue">
+        —
+      </strong>
+
+      <small id="analysisMode">
+        —
+      </small>
+
+    </article>
+
+  </div>
+
+
+  <div class="player-card">
+
+    <div class="track-info">
+
+      <div class="cover">
+        ♫
+      </div>
+
+      <div>
+
+        <strong id="trackName">
+          Música
+        </strong>
+
+        <small id="trackStatus">
+          Pronta para tocar
+        </small>
+
+      </div>
+
+    </div>
+
+    <audio
+      id="audio"
+      controls
+      preload="metadata">
+    </audio>
+
+  </div>
+
+
+  <div class="chords-card">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow compact">
+          <span></span>
+          CIFRA SINCRONIZADA
+        </span>
+
+        <h2>
+          Progressão harmônica
+        </h2>
+
+      </div>
+
+      <button
+        class="ghost pill"
+        id="copyBtn"
+      >
+        Copiar cifra
+      </button>
+
+    </div>
+
+
+    <div class="current-chord">
+
+      <span>
+        AGORA
+      </span>
+
+      <strong id="currentChord">
+        —
+      </strong>
+
+      <small id="currentNotes">
+        Dê play para acompanhar
+      </small>
+
+    </div>
+
+
+    <div
+      id="timeline"
+      class="timeline">
+    </div>
+
+  </div>
+
+
+  <div class="keyboard-card">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow compact">
+          <span></span>
+          MODO TECLADO
+        </span>
+
+        <h2>
+          Notas do acorde atual
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="keyboard"
+      class="keyboard">
+    </div>
+
+    <p class="hint">
+      As teclas destacadas correspondem às notas
+      detectadas no acorde atual.
+    </p>
+
+  </div>
+
+
+  <p
+    class="disclaimer"
+    id="disclaimer">
+  </p>
+
+</section>
+
+</main>
+
+
+<footer>
+  Chord Vision • protótipo open-source para estudo musical
+</footer>
+
+
+<script src="/static/app.js"></script>
+
+</body>
+</html>
